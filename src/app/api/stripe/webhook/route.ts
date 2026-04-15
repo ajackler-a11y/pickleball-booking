@@ -194,42 +194,43 @@ export async function POST(req: NextRequest) {
         sessionStart.getTime() - 48 * 60 * 60 * 1000
       );
 
-      const newBooking: Booking = {
-  id: crypto.randomUUID(),
-  name,
-  email,
-  slot,
-  footageLink,
-  stripeSessionId: session.id,
-  createdAt: new Date().toISOString(),
-  footageDeadline: footageDeadline.toISOString(),
-};
+      const newBooking = {
+        id: crypto.randomUUID(),
+        name,
+        email,
+        slot,
+        footageLink,
+        stripeSessionId: session.id,
+        createdAt: new Date().toISOString(),
+        footageDeadline: footageDeadline.toISOString(),
+      };
 
-try {
-  const bookings = await readBookings();
+      try {
+        const bookings = await readBookings();
 
-  const alreadyExists = bookings.some(
-    (booking) => booking.stripeSessionId === session.id
-  );
+        const alreadyExists = bookings.some(
+          (booking) => booking.stripeSessionId === session.id
+        );
 
-  if (alreadyExists) {
-    console.log("Booking already exists for session:", session.id);
-    return NextResponse.json({ received: true });
-  }
+        if (alreadyExists) {
+          console.log("Booking already exists for session:", session.id);
+          return NextResponse.json({ received: true });
+        }
 
-  bookings.push(newBooking);
-  await writeBookings(bookings);
-  console.log("Booking saved:", newBooking);
-} catch (saveError) {
-  console.error("Booking save failed:", saveError);
-}
+        bookings.push(newBooking);
+        await writeBookings(bookings);
+        console.log("Booking saved:", newBooking);
+      } catch (saveError) {
+        console.error("Booking save failed:", saveError);
+      }
 
-try {
-  await sendBookingConfirmationEmail(newBooking);
-  console.log("Confirmation email sent to:", newBooking.email);
-} catch (emailError) {
-  console.error("Confirmation email failed:", emailError);
-}
+      try {
+        await sendBookingConfirmationEmail(newBooking);
+        console.log("Confirmation email sent to:", newBooking.email);
+      } catch (emailError) {
+        console.error("Confirmation email failed:", emailError);
+      }
+    }
 
     return NextResponse.json({ received: true });
   } catch (error) {

@@ -194,39 +194,42 @@ export async function POST(req: NextRequest) {
         sessionStart.getTime() - 48 * 60 * 60 * 1000
       );
 
-      const bookings = await readBookings();
-
-      const alreadyExists = bookings.some(
-        (booking) => booking.stripeSessionId === session.id
-      );
-
-      if (alreadyExists) {
-        console.log("Booking already exists for session:", session.id);
-        return NextResponse.json({ received: true });
-      }
-
       const newBooking: Booking = {
-        id: crypto.randomUUID(),
-        name,
-        email,
-        slot,
-        footageLink,
-        stripeSessionId: session.id,
-        createdAt: new Date().toISOString(),
-        footageDeadline: footageDeadline.toISOString(),
-      };
+  id: crypto.randomUUID(),
+  name,
+  email,
+  slot,
+  footageLink,
+  stripeSessionId: session.id,
+  createdAt: new Date().toISOString(),
+  footageDeadline: footageDeadline.toISOString(),
+};
 
-      bookings.push(newBooking);
-      await writeBookings(bookings);
-      console.log("Booking saved:", newBooking);
+try {
+  const bookings = await readBookings();
 
-      try {
-        await sendBookingConfirmationEmail(newBooking);
-        console.log("Confirmation email sent to:", newBooking.email);
-      } catch (emailError) {
-        console.error("Confirmation email failed:", emailError);
-      }
-    }
+  const alreadyExists = bookings.some(
+    (booking) => booking.stripeSessionId === session.id
+  );
+
+  if (alreadyExists) {
+    console.log("Booking already exists for session:", session.id);
+    return NextResponse.json({ received: true });
+  }
+
+  bookings.push(newBooking);
+  await writeBookings(bookings);
+  console.log("Booking saved:", newBooking);
+} catch (saveError) {
+  console.error("Booking save failed:", saveError);
+}
+
+try {
+  await sendBookingConfirmationEmail(newBooking);
+  console.log("Confirmation email sent to:", newBooking.email);
+} catch (emailError) {
+  console.error("Confirmation email failed:", emailError);
+}
 
     return NextResponse.json({ received: true });
   } catch (error) {

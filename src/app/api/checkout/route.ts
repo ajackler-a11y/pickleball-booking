@@ -1,33 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
 export async function POST(req: NextRequest) {
+  const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+
+  if (!stripeSecretKey) {
+    return NextResponse.json(
+      { error: "Missing STRIPE_SECRET_KEY" },
+      { status: 500 }
+    );
+  }
+
+  const stripe = new Stripe(stripeSecretKey);
+
   try {
     const body = await req.json();
-    const { name, email, slot, footageLink } = body;
+    const { slot, name, email, footageLink } = body;
 
-    if (!name || !email || !slot) {
+    if (!slot || !name || !email) {
       return NextResponse.json(
-        { error: "Missing required fields." },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
     const baseUrl =
-      process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+      process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      customer_email: email,
+      payment_method_types: ["card"],
       line_items: [
         {
           price_data: {
             currency: "usd",
             product_data: {
-              name: "Pickleball Coaching Session",
-              description: `Session time: ${slot}`,
+              name: "Remote Coaching Session",
             },
             unit_amount: 10000,
           },

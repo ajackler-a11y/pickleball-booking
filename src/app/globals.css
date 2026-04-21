@@ -389,7 +389,7 @@ nav {
 
 .testimonial {
   background: var(--bg);
-  padding: 88px 6% 16px;
+  padding: 2rem;
   border-radius: 18px;
   border: 1px solid rgba(0,0,0,0.08);
   box-shadow: 0 12px 30px rgba(0,0,0,0.08);

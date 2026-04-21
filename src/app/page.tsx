@@ -89,18 +89,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* BOOKING */}
-<section id="booking" className="booking">
-  <div className="booking-inner">
-    <h2>Book Your Game Review</h2>
-    <p>Choose a time and let's break down your game together.</p>
 
-    {/* TEMP BUTTON (replace later with real booking system) */}
-    <a href="mailto:aj@thepickleballhelpline.com" className="btn-primary">
-      Book via Email →
-    </a>
-  </div>
-</section>
 
       {/* HOW IT WORKS */}
       <section id="how-it-works" className="how-it-works">

@@ -76,7 +76,7 @@ export default function Home() {
           <h1>Frustrated with{" "}<br className="mobile-break" />your pickleball game?</h1>
           <p className="hero-sub">We review your gameplay together so you can clearly see what's going on and fix it.</p>
           <div className="hero-cta-group">
-            <a href="#booking" className="btn-primary">Get My Game Reviewed <span>→</span></a>
+            <a href="/booking" className="btn-primary">Get My Game Reviewed <span>→</span></a>
             <p className="hero-price">45-minute session · $120</p>
           </div>
           <div className="hero-testimonial">
@@ -138,7 +138,7 @@ export default function Home() {
         </div>
         <div className="section-cta">
           <p className="section-cta-text">Stop guessing. Start improving.</p>
-          <a href="#booking" className="btn-primary">Get My Game Reviewed →</a>
+          <a href="/booking" className="btn-primary">Get My Game Reviewed →</a>
         </div>
       </section>
 
